@@ -1,0 +1,652 @@
+ubuntu@datta-bhure ~ $ mysql -u root -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.28-0ubuntu0.21.10.3 (Ubuntu)
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++-------------------------+
+| Database                |
++-------------------------+
+| Address_Book_Service_DB |
+| Employees               |
+| employeedb              |
+| information_schema      |
+| mysql                   |
+| performance_schema      |
+| sample                  |
+| student                 |
+| sys                     |
++-------------------------+
+9 rows in set (0.01 sec)
+
+mysql> create database payroll_service_db;
+Query OK, 1 row affected (0.20 sec)
+
+mysql> show databases;
++-------------------------+
+| Database                |
++-------------------------+
+| Address_Book_Service_DB |
+| Employees               |
+| employeedb              |
+| information_schema      |
+| mysql                   |
+| payroll_service_db      |
+| performance_schema      |
+| sample                  |
+| student                 |
+| sys                     |
++-------------------------+
+10 rows in set (0.00 sec)
+
+mysql> use payroll_service_db;
+Database changed
+mysql> select database();
++--------------------+
+| database()         |
++--------------------+
+| payroll_service_db |
++--------------------+
+1 row in set (0.00 sec)
+
+mysql> create table employee_payroll(id int auto increment,name varchar(50),salary int,start_date date,primary key(id));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'auto increment,name varchar(50),salary int,start_date date,primary key(id))' at line 1
+mysql> create table employee_payroll(id int auto_increment,name varchar(50),salary int,start_date date,primary key(id));
+Query OK, 0 rows affected (0.78 sec)
+
+mysql> show tables;
++------------------------------+
+| Tables_in_payroll_service_db |
++------------------------------+
+| employee_payroll             |
++------------------------------+
+1 row in set (0.01 sec)
+
+mysql> desc emmployee_payroll;
+ERROR 1146 (42S02): Table 'payroll_service_db.emmployee_payroll' doesn't exist
+mysql> desc employee_payroll;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| name       | varchar(50) | YES  |     | NULL    |                |
+| salary     | int         | YES  |     | NULL    |                |
+| start_date | date        | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> insert into employee_payroll(name,salary,start_date) values('datta',10000,'2021-01-01');
+Query OK, 1 row affected (0.17 sec)
+
+mysql> select * from employee_payroll;
++----+-------+--------+------------+
+| id | name  | salary | start_date |
++----+-------+--------+------------+
+|  1 | datta |  10000 | 2021-01-01 |
++----+-------+--------+------------+
+1 row in set (0.00 sec)
+
+mysql> insert into employee_payroll(name,salary,start_date) values('bhure',15000,'2021-02-01');
+Query OK, 1 row affected (0.18 sec)
+
+mysql> select * from employee_payroll;
++----+-------+--------+------------+
+| id | name  | salary | start_date |
++----+-------+--------+------------+
+|  1 | datta |  10000 | 2021-01-01 |
+|  2 | bhure |  15000 | 2021-02-01 |
++----+-------+--------+------------+
+2 rows in set (0.00 sec)
+
+mysql> update employee_payroll set salary=20000;
+Query OK, 2 rows affected (0.13 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+-------+--------+------------+
+| id | name  | salary | start_date |
++----+-------+--------+------------+
+|  1 | datta |  20000 | 2021-01-01 |
+|  2 | bhure |  20000 | 2021-02-01 |
++----+-------+--------+------------+
+2 rows in set (0.00 sec)
+
+mysql> insert into employee_payroll(name,salary,start_date) values('ganesh',15000,'2021-03-01'),('sawle',25000,'2021-04-01'),('abc',30000,'2021-05-01');
+Query OK, 3 rows affected (0.11 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+------------+
+| id | name   | salary | start_date |
++----+--------+--------+------------+
+|  1 | datta  |  20000 | 2021-01-01 |
+|  2 | bhure  |  20000 | 2021-02-01 |
+|  3 | ganesh |  15000 | 2021-03-01 |
+|  4 | sawle  |  25000 | 2021-04-01 |
+|  5 | abc    |  30000 | 2021-05-01 |
++----+--------+--------+------------+
+5 rows in set (0.01 sec)
+
+mysql> select salary from employee_payroll;
++--------+
+| salary |
++--------+
+|  20000 |
+|  20000 |
+|  15000 |
+|  25000 |
+|  30000 |
++--------+
+5 rows in set (0.00 sec)
+
+mysql> select salary from employee_payroll where id=4;
++--------+
+| salary |
++--------+
+|  25000 |
++--------+
+1 row in set (0.00 sec)
+
+mysql> select salary from employee_payroll where start_date between cast('2021-03-01' as date) and date(now());
++--------+
+| salary |
++--------+
+|  15000 |
+|  25000 |
+|  30000 |
++--------+
+3 rows in set (0.00 sec)
+
+mysql> select salary from employee_payroll where id=3 or name='abc';
++--------+
+| salary |
++--------+
+|  15000 |
+|  30000 |
++--------+
+2 rows in set (0.00 sec)
+
+mysql> select salary from employee_payroll where salary=20000;
++--------+
+| salary |
++--------+
+|  20000 |
+|  20000 |
++--------+
+2 rows in set (0.00 sec)
+
+mysql> select salary from employee_payroll where salary>20000;
++--------+
+| salary |
++--------+
+|  25000 |
+|  30000 |
++--------+
+2 rows in set (0.00 sec)
+
+mysql> select salary from employee_payroll where salary<20000;
++--------+
+| salary |
++--------+
+|  15000 |
++--------+
+1 row in set (0.01 sec)
+
+mysql> select salary from employee_payroll where salary<>20000;
++--------+
+| salary |
++--------+
+|  15000 |
+|  25000 |
+|  30000 |
++--------+
+3 rows in set (0.00 sec)
+
+mysql> alter table employee_payroll add gender char(1) after name;
+Query OK, 0 rows affected (2.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+--------+------------+
+| id | name   | gender | salary | start_date |
++----+--------+--------+--------+------------+
+|  1 | datta  | NULL   |  20000 | 2021-01-01 |
+|  2 | bhure  | NULL   |  20000 | 2021-02-01 |
+|  3 | ganesh | NULL   |  15000 | 2021-03-01 |
+|  4 | sawle  | NULL   |  25000 | 2021-04-01 |
+|  5 | abc    | NULL   |  30000 | 2021-05-01 |
++----+--------+--------+--------+------------+
+5 rows in set (0.00 sec)
+
+mysql> update employee_payroll set gender='M';
+Query OK, 5 rows affected (0.17 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+--------+------------+
+| id | name   | gender | salary | start_date |
++----+--------+--------+--------+------------+
+|  1 | datta  | M      |  20000 | 2021-01-01 |
+|  2 | bhure  | M      |  20000 | 2021-02-01 |
+|  3 | ganesh | M      |  15000 | 2021-03-01 |
+|  4 | sawle  | M      |  25000 | 2021-04-01 |
+|  5 | abc    | M      |  30000 | 2021-05-01 |
++----+--------+--------+--------+------------+
+5 rows in set (0.00 sec)
+
+mysql> desc employee_payroll;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| name       | varchar(50) | YES  |     | NULL    |                |
+| gender     | char(1)     | YES  |     | NULL    |                |
+| salary     | int         | YES  |     | NULL    |                |
+| start_date | date        | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> update employee_payroll set gender='F' where id=5;
+Query OK, 1 row affected (0.11 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+--------+------------+
+| id | name   | gender | salary | start_date |
++----+--------+--------+--------+------------+
+|  1 | datta  | M      |  20000 | 2021-01-01 |
+|  2 | bhure  | M      |  20000 | 2021-02-01 |
+|  3 | ganesh | M      |  15000 | 2021-03-01 |
+|  4 | sawle  | M      |  25000 | 2021-04-01 |
+|  5 | abc    | F      |  30000 | 2021-05-01 |
++----+--------+--------+--------+------------+
+5 rows in set (0.00 sec)
+
+mysql> update employee_payroll set gender='F' where name='sawle';
+Query OK, 1 row affected (0.12 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+--------+------------+
+| id | name   | gender | salary | start_date |
++----+--------+--------+--------+------------+
+|  1 | datta  | M      |  20000 | 2021-01-01 |
+|  2 | bhure  | M      |  20000 | 2021-02-01 |
+|  3 | ganesh | M      |  15000 | 2021-03-01 |
+|  4 | sawle  | F      |  25000 | 2021-04-01 |
+|  5 | abc    | F      |  30000 | 2021-05-01 |
++----+--------+--------+--------+------------+
+5 rows in set (0.00 sec)
+
+mysql> update employee_payroll set gender='M' where salary>15000;
+Query OK, 2 rows affected (0.10 sec)
+Rows matched: 4  Changed: 2  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+--------+------------+
+| id | name   | gender | salary | start_date |
++----+--------+--------+--------+------------+
+|  1 | datta  | M      |  20000 | 2021-01-01 |
+|  2 | bhure  | M      |  20000 | 2021-02-01 |
+|  3 | ganesh | M      |  15000 | 2021-03-01 |
+|  4 | sawle  | M      |  25000 | 2021-04-01 |
+|  5 | abc    | M      |  30000 | 2021-05-01 |
++----+--------+--------+--------+------------+
+5 rows in set (0.00 sec)
+
+mysql> alter table employee_payroll drop gender;
+^[[A^[[AQuery OK, 0 rows affected (2.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+------------+
+| id | name   | salary | start_date |
++----+--------+--------+------------+
+|  1 | datta  |  20000 | 2021-01-01 |
+|  2 | bhure  |  20000 | 2021-02-01 |
+|  3 | ganesh |  15000 | 2021-03-01 |
+|  4 | sawle  |  25000 | 2021-04-01 |
+|  5 | abc    |  30000 | 2021-05-01 |
++----+--------+--------+------------+
+5 rows in set (0.00 sec)
+
+mysql> delete from employee_payroll where name='abc' or id=4;
+Query OK, 2 rows affected (0.13 sec)
+
+mysql> select * from employee_payroll;
++----+--------+--------+------------+
+| id | name   | salary | start_date |
++----+--------+--------+------------+
+|  1 | datta  |  20000 | 2021-01-01 |
+|  2 | bhure  |  20000 | 2021-02-01 |
+|  3 | ganesh |  15000 | 2021-03-01 |
++----+--------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> alter table employee_payroll add gender char(1) after id;
+^[[A^[[AQuery OK, 0 rows affected (2.22 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+--------+------------+
+| id | gender | name   | salary | start_date |
++----+--------+--------+--------+------------+
+|  1 | NULL   | datta  |  20000 | 2021-01-01 |
+|  2 | NULL   | bhure  |  20000 | 2021-02-01 |
+|  3 | NULL   | ganesh |  15000 | 2021-03-01 |
++----+--------+--------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> update employee_payroll set gender='M' where salary>=20000;
+Query OK, 2 rows affected (0.15 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+--------+------------+
+| id | gender | name   | salary | start_date |
++----+--------+--------+--------+------------+
+|  1 | M      | datta  |  20000 | 2021-01-01 |
+|  2 | M      | bhure  |  20000 | 2021-02-01 |
+|  3 | NULL   | ganesh |  15000 | 2021-03-01 |
++----+--------+--------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> update employee_payroll set gender='F' where salary<20000;
+Query OK, 1 row affected (0.17 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+--------+------------+
+| id | gender | name   | salary | start_date |
++----+--------+--------+--------+------------+
+|  1 | M      | datta  |  20000 | 2021-01-01 |
+|  2 | M      | bhure  |  20000 | 2021-02-01 |
+|  3 | F      | ganesh |  15000 | 2021-03-01 |
++----+--------+--------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql>  select gender,sum(salary) from employee_payroll where gender = 'F' group
+    -> by gender;
++--------+-------------+
+| gender | sum(salary) |
++--------+-------------+
+| F      |       15000 |
++--------+-------------+
+1 row in set (0.04 sec)
+
+mysql> select gender,sum(salary) from employee_payroll where gender='M' group by gender;
++--------+-------------+
+| gender | sum(salary) |
++--------+-------------+
+| M      |       40000 |
++--------+-------------+
+1 row in set (0.01 sec)
+
+mysql> select sum(salary) from employee_payroll;
++-------------+
+| sum(salary) |
++-------------+
+|       55000 |
++-------------+
+1 row in set (0.01 sec)
+
+mysql> select max(salary) from employee_payroll;
++-------------+
+| max(salary) |
++-------------+
+|       20000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select min(salary) from employee_payroll;
++-------------+
+| min(salary) |
++-------------+
+|       15000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(salary) from employee_payroll;
++-------------+
+| avg(salary) |
++-------------+
+|  18333.3333 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select name, gender,count(salary) from employee_payroll where gender='M' group by gender;
+ERROR 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'payroll_service_db.employee_payroll.name' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+mysql> select name,gender,count(salary) from employee_payroll where gender='M' group by gender;
+ERROR 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'payroll_service_db.employee_payroll.name' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+mysql> select name,gender,count(salary) from employee_payroll where gender='F' group by gender;
+ERROR 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'payroll_service_db.employee_payroll.name' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+mysql> select name,gender,avg(salary) from employee_payroll where gender='F' group by gender;
+ERROR 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'payroll_service_db.employee_payroll.name' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+mysql> select count(salary) from employee_payroll;
++---------------+
+| count(salary) |
++---------------+
+|             3 |
++---------------+
+1 row in set (0.01 sec)
+
+mysql> select salary from employee_payroll;
++--------+
+| salary |
++--------+
+|  20000 |
+|  20000 |
+|  15000 |
++--------+
+3 rows in set (0.00 sec)
+
+mysql> select distinct salary from employee_payroll;
++--------+
+| salary |
++--------+
+|  20000 |
+|  15000 |
++--------+
+2 rows in set (0.00 sec)
+
+mysql> alter table employee_payroll add phonenumber varchar(11) after name;
+Query OK, 0 rows affected (2.25 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+-------------+--------+------------+
+| id | gender | name   | phonenumber | salary | start_date |
++----+--------+--------+-------------+--------+------------+
+|  1 | M      | datta  | NULL        |  20000 | 2021-01-01 |
+|  2 | M      | bhure  | NULL        |  20000 | 2021-02-01 |
+|  3 | F      | ganesh | NULL        |  15000 | 2021-03-01 |
++----+--------+--------+-------------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> alter table employee_payroll add address varchar(250) after phonenumber;
+Query OK, 0 rows affected (2.19 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+-------------+---------+--------+------------+
+| id | gender | name   | phonenumber | address | salary | start_date |
++----+--------+--------+-------------+---------+--------+------------+
+|  1 | M      | datta  | NULL        | NULL    |  20000 | 2021-01-01 |
+|  2 | M      | bhure  | NULL        | NULL    |  20000 | 2021-02-01 |
+|  3 | F      | ganesh | NULL        | NULL    |  15000 | 2021-03-01 |
++----+--------+--------+-------------+---------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> alter table employee_payroll add department varchar(150) not null after address;
+Query OK, 0 rows affected (2.32 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+-------------+---------+------------+--------+------------+
+| id | gender | name   | phonenumber | address | department | salary | start_date |
++----+--------+--------+-------------+---------+------------+--------+------------+
+|  1 | M      | datta  | NULL        | NULL    |            |  20000 | 2021-01-01 |
+|  2 | M      | bhure  | NULL        | NULL    |            |  20000 | 2021-02-01 |
+|  3 | F      | ganesh | NULL        | NULL    |            |  15000 | 2021-03-01 |
++----+--------+--------+-------------+---------+------------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> desc employee_payroll;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int          | NO   | PRI | NULL    | auto_increment |
+| gender      | char(1)      | YES  |     | NULL    |                |
+| name        | varchar(50)  | YES  |     | NULL    |                |
+| phonenumber | varchar(11)  | YES  |     | NULL    |                |
+| address     | varchar(250) | YES  |     | NULL    |                |
+| department  | varchar(150) | NO   |     | NULL    |                |
+| salary      | int          | YES  |     | NULL    |                |
+| start_date  | date         | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+mysql> alter table employee_payroll alter address set default 'ABC';
+Query OK, 0 rows affected (0.21 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee_payroll;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int          | NO   | PRI | NULL    | auto_increment |
+| gender      | char(1)      | YES  |     | NULL    |                |
+| name        | varchar(50)  | YES  |     | NULL    |                |
+| phonenumber | varchar(11)  | YES  |     | NULL    |                |
+| address     | varchar(250) | YES  |     | ABC     |                |
+| department  | varchar(150) | NO   |     | NULL    |                |
+| salary      | int          | YES  |     | NULL    |                |
+| start_date  | date         | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+mysql> select * from employee_payroll;
++----+--------+--------+-------------+---------+------------+--------+------------+
+| id | gender | name   | phonenumber | address | department | salary | start_date |
++----+--------+--------+-------------+---------+------------+--------+------------+
+|  1 | M      | datta  | NULL        | NULL    |            |  20000 | 2021-01-01 |
+|  2 | M      | bhure  | NULL        | NULL    |            |  20000 | 2021-02-01 |
+|  3 | F      | ganesh | NULL        | NULL    |            |  15000 | 2021-03-01 |
++----+--------+--------+-------------+---------+------------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> insert into employee_payroll(name,salary,start_date,department) values('Mayur',100000,'2020-09-01','Electrical');
+Query OK, 1 row affected (0.12 sec)
+
+mysql> select * from employee_payroll;
++----+--------+--------+-------------+---------+------------+--------+------------+
+| id | gender | name   | phonenumber | address | department | salary | start_date |
++----+--------+--------+-------------+---------+------------+--------+------------+
+|  1 | M      | datta  | NULL        | NULL    |            |  20000 | 2021-01-01 |
+|  2 | M      | bhure  | NULL        | NULL    |            |  20000 | 2021-02-01 |
+|  3 | F      | ganesh | NULL        | NULL    |            |  15000 | 2021-03-01 |
+|  6 | NULL   | Mayur  | NULL        | ABC     | Electrical | 100000 | 2020-09-01 |
++----+--------+--------+-------------+---------+------------+--------+------------+
+4 rows in set (0.00 sec)
+
+mysql> alter table employee_payroll rename column salary to basic_pay;
+Query OK, 0 rows affected (0.51 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add deductions int not null after basic_pay;
+Query OK, 0 rows affected (1.83 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add taxable_pay int after deductions;
+Query OK, 0 rows affected (1.64 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add tax double after taxable_pay;
+Query OK, 0 rows affected (2.26 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee_payroll add net_pay int not null after tax;
+Query OK, 0 rows affected (2.17 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> update employee_payroll set department='hr' where name='ganesh';
+Query OK, 1 row affected (0.13 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+-------------+---------+------------+-----------+------------+-------------+------+---------+------------+
+| id | gender | name   | phonenumber | address | department | basic_pay | deductions | taxable_pay | tax  | net_pay | start_date |
++----+--------+--------+-------------+---------+------------+-----------+------------+-------------+------+---------+------------+
+|  1 | M      | datta  | NULL        | NULL    |            |     20000 |          0 |        NULL | NULL |       0 | 2021-01-01 |
+|  2 | M      | bhure  | NULL        | NULL    |            |     20000 |          0 |        NULL | NULL |       0 | 2021-02-01 |
+|  3 | F      | ganesh | NULL        | NULL    | hr         |     15000 |          0 |        NULL | NULL |       0 | 2021-03-01 |
+|  6 | NULL   | Mayur  | NULL        | ABC     | Electrical |    100000 |          0 |        NULL | NULL |       0 | 2020-09-01 |
++----+--------+--------+-------------+---------+------------+-----------+------------+-------------+------+---------+------------+
+4 rows in set (0.00 sec)
+
+mysql> update employee_payroll set department ='sales' where start_date ='2021-02-01';
+Query OK, 1 row affected (0.14 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+-------------+---------+------------+-----------+------------+-------------+------+---------+------------+
+| id | gender | name   | phonenumber | address | department | basic_pay | deductions | taxable_pay | tax  | net_pay | start_date |
++----+--------+--------+-------------+---------+------------+-----------+------------+-------------+------+---------+------------+
+|  1 | M      | datta  | NULL        | NULL    |            |     20000 |          0 |        NULL | NULL |       0 | 2021-01-01 |
+|  2 | M      | bhure  | NULL        | NULL    | sales      |     20000 |          0 |        NULL | NULL |       0 | 2021-02-01 |
+|  3 | F      | ganesh | NULL        | NULL    | hr         |     15000 |          0 |        NULL | NULL |       0 | 2021-03-01 |
+|  6 | NULL   | Mayur  | NULL        | ABC     | Electrical |    100000 |          0 |        NULL | NULL |       0 | 2020-09-01 |
++----+--------+--------+-------------+---------+------------+-----------+------------+-------------+------+---------+------------+
+4 rows in set (0.01 sec)
+
+mysql> show databses;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'databses' at line 1
+mysql> show databases;
++-------------------------+
+| Database                |
++-------------------------+
+| Address_Book_Service_DB |
+| Employees               |
+| employeedb              |
+| information_schema      |
+| mysql                   |
+| payroll_service_db      |
+| performance_schema      |
+| sample                  |
+| student                 |
+| sys                     |
++-------------------------+
+10 rows in set (0.00 sec)
+
+mysql> create database payrollservice;
+Query OK, 1 row affected (0.22 sec)
+
+mysql> show databases;
++-------------------------+
+| Database                |
++-------------------------+
+| Address_Book_Service_DB |
+| Employees               |
+| employeedb              |
+| information_schema      |
+| mysql                   |
+| payroll_service_db      |
+| payrollservice          |
+| performance_schema      |
+| sample                  |
+| student                 |
+| sys                     |
++-------------------------+
+11 rows in set (0.00 sec)
+
+
+
